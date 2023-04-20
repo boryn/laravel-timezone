@@ -55,6 +55,10 @@ class UpdateUsersTimezone
         
         $ip = $this->getFromLookup();
         $geoip_info = geoip()->getLocation($ip);
+        
+        if (config('timezone.store_in_session')) {
+            request()->session()->put('geoip_info', $geoip_info);
+        }
 
         if ($user->timezone != $geoip_info['timezone']) {
             if (config('timezone.overwrite') == true || $user->timezone == null) {
