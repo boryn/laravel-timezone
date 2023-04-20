@@ -59,11 +59,19 @@ class UpdateUsersTimezone
         if ($user->timezone != $geoip_info['timezone']) {
             if (config('timezone.overwrite') == true || $user->timezone == null) {
                 $user->timezone = $geoip_info['timezone'] ?? $geoip_info->time_zone['name'];
-                $user->save();
 
                 $this->notify($geoip_info);
             }
         }
+        
+        // ps. country 'iso_code' using default is returned as two-letter country code ISO 3166-1 alpha-2
+        // https://ip-api.com/docs/api:json
+        // (which is compatible with https://github.com/petercoles/Multilingual-Country-List)
+        if ($user->country == null || $user->country != $geoip_info['iso_code']) {
+            $user->country = $geoip_info['iso_code'] ?? null;
+        }
+
+        $user->save();
     }
 
     /**
