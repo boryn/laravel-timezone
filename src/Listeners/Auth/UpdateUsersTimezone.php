@@ -74,6 +74,20 @@ class UpdateUsersTimezone
             }
         }
 
+        // AF	Africa
+        // AN	Antarctica
+        // AS	Asia
+        // EU	Europe
+        // NA	North america
+        // OC	Oceania
+        // SA	South america
+        $continentCodeField = config('timezone.continent_code_field');
+        if ($continentCodeField) {
+            if ($user->{$continentCodeField} == null || $user->{$continentCodeField} != $geoip_info['continent']) {
+                $user->{$continentCodeField} = $geoip_info['continent'] ?? null;
+            }
+        }
+
         $user->save();
     }
 
