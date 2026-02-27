@@ -4,6 +4,7 @@ namespace JamesMills\LaravelTimezone\Listeners\Auth;
 
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Auth;
+use JamesMills\LaravelTimezone\Events\UserTimezoneUpdatedEvent;
 use Laravel\Passport\Events\AccessTokenCreated;
 use Torann\GeoIP\Location;
 
@@ -52,7 +53,7 @@ class UpdateUsersTimezone
         if (config('timezone.overwrite') == false && $user->timezone != null) {
             return;
         }
-        
+
         $ip = $this->getFromLookup();
         $geoip_info = geoip()->getLocation($ip);
 
@@ -63,7 +64,7 @@ class UpdateUsersTimezone
                 $this->notify($geoip_info);
             }
         }
-        
+
         // ps. country 'iso_code' using default is returned as two-letter country code ISO 3166-1 alpha-2
         // https://ip-api.com/docs/api:json
         // (which is compatible with https://github.com/petercoles/Multilingual-Country-List)
@@ -89,6 +90,8 @@ class UpdateUsersTimezone
         }
 
         $user->save();
+
+        event(new UserTimezoneUpdatedEvent($user));
     }
 
     /**
