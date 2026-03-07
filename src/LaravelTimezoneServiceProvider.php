@@ -86,6 +86,7 @@ class LaravelTimezoneServiceProvider extends ServiceProvider
     {
         $events = [
             \Illuminate\Auth\Events\Login::class,
+            \Illuminate\Auth\Events\Registered::class,
             \Laravel\Passport\Events\AccessTokenCreated::class,
         ];
 

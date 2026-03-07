@@ -3,6 +3,7 @@
 namespace JamesMills\LaravelTimezone\Listeners\Auth;
 
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use JamesMills\LaravelTimezone\Events\UserTimezoneUpdatedEvent;
 use Laravel\Passport\Events\AccessTokenCreated;
@@ -38,6 +39,13 @@ class UpdateUsersTimezone
          */
         if ($event instanceof Login) {
             $user = Auth::user();
+        }
+
+        /**
+         * If the event is Registered, we get the user from the event.
+         */
+        if ($event instanceof Registered) {
+            $user = $event->user;
         }
 
         /**
